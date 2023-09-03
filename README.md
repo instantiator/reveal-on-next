@@ -56,7 +56,7 @@ useEffect(() => {
 }, []);
 ```
 
-The `embedded` option is set to true - and this helps to incorporate other elements into the presentation.
+The `embedded` option is set to true - and this helps to incorporate other layout and elements alongside the presentation. As the presentation no longer automatically fills the page, the `reveal` `div` will need to have its size specified in CSS...
 
 ### Modify `globals.css`
 
