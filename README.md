@@ -4,6 +4,8 @@ This is a simple application that allows the incorporation of a [Reveal.js](http
 
 Multiplexing allows the controller to update all the clients as it moves through the presentation. Effectively, they follow along...
 
+![](docs/images/multiplexing-slides-1-and-2.gif)
+
 ## Test this app
 
 ```bash
