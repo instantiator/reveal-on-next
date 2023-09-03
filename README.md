@@ -94,13 +94,15 @@ _*Sometimes referred to as a master presentation._
 
 ### The server
 
-* This demo uses the server at: https://reveal-multiplex.glitch.me/
+This demo uses the server at: https://reveal-multiplex.glitch.me/
 
-  ```tsx
-  const SOCKET_IO_SERVER = 'https://reveal-multiplex.glitch.me/';
-  ```
+```tsx
+const SOCKET_IO_SERVER = 'https://reveal-multiplex.glitch.me/';
+```
 
-A production system should host its own server.
+* To test locally, you could also run your own server.
+* A production system should host its own server.
+* See: [reveal/multiplex](https://github.com/reveal/multiplex)
 
 ### Client and controller
 
