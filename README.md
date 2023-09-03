@@ -1,6 +1,8 @@
 # test-reveal-on-next
 
-This is a simple application that allows the incorporation of a [Reveal.js](https://revealjs.com/) presentation into a [NextJS](https://nextjs.org/) / [React](https://react.dev/) application.
+This is a simple application that allows the incorporation of a [Reveal.js](https://revealjs.com/) presentation into a [NextJS](https://nextjs.org/) / [React](https://react.dev/) application, and subsequent multiplexing of the presentation across a controller and any number of clients.
+
+Multiplexing allows the controller to update all the clients as it moves through the presentation. Effectively, they follow along...
 
 ## Test this app
 
@@ -75,3 +77,62 @@ Here, you can see that `margin` and `padding` on `html` and `body` have been zer
 `dynamic` is used to import the `Presentation` element dynamically, with `ssr: false` to prevent server-side rendering.
 
 The `Presentation` element is provided with child elements that contain the content to display. This allows the rendering of different content for different pages.
+
+## Multiplexing
+
+Multiplexing allows a controller presentation to send its state to client presentations on other devices (ie. to allow them to follow along).
+
+There are 3 components:
+
+* Any number of client presentations
+* A controller* presentation, with the same slides
+* A socket.io based server that passes messages between the various presentations
+
+_*Sometimes referred to as a master presentation._
+
+### The server
+
+* This demo uses the server at: https://reveal-multiplex.glitch.me/
+
+  ```tsx
+  const SOCKET_IO_SERVER = 'https://reveal-multiplex.glitch.me/';
+  ```
+
+A production system should host its own server.
+
+### Client and controller
+
+Install the multiplex plugin:
+
+```bash
+npm install reveal-multiplex
+```
+
+The Presentation component in `presentation.tsx` accepts several parameters:
+
+* `secret` (a secret to permit control, or `null` if acting as the client)
+* `id` (the id of the presentation)
+* `role` (not currently used)
+
+* To collect a fresh secret and id from the server, visit: https://reveal-multiplex.glitch.me/token
+
+The multiplex plugin is configured during initialization of Reveal:
+
+```tsx
+multiplex: {
+    secret: secret,
+    id: id,
+    url: SOCKET_IO_SERVER
+},
+dependencies: [
+    { src: 'https://reveal-multiplex.glitch.me/socket.io/socket.io.js', async: true },
+    { src: 'https://reveal-multiplex.glitch.me/master.js', async: true },
+    { src: 'https://reveal-multiplex.glitch.me/client.js', async: true },
+]
+```
+
+Because these dependencies rely on being able to find `Reveal` as a global variable, we also add this, just before initialization:
+
+```tsx
+window.Reveal = reveal;
+```

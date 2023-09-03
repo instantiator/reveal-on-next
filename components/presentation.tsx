@@ -9,14 +9,30 @@ import Markdown from 'reveal.js/plugin/markdown/markdown.esm.js';
 import 'reveal.js/dist/reveal.css';
 import 'reveal.js/dist/theme/black.css';
 
-export default function Presentation({ children }: { children: ReactNode }) {
+const SOCKET_IO_SERVER = 'https://reveal-multiplex.glitch.me/';
+
+export default function Presentation({ role, secret, id, children }: { role: string, secret: string | null, id: string, children: ReactNode }) {
     useEffect(() => {
-        const deck = new Reveal({ embedded: true, plugins: [ Markdown ]});
-        deck.initialize();
+        const reveal = new Reveal({
+            embedded: true, 
+            plugins: [ Markdown ],
+            multiplex: {
+                secret: secret,
+                id: id,
+                url: SOCKET_IO_SERVER
+            },
+            dependencies: [
+                { src: 'https://reveal-multiplex.glitch.me/socket.io/socket.io.js', async: true },
+                { src: 'https://reveal-multiplex.glitch.me/master.js', async: true },
+                { src: 'https://reveal-multiplex.glitch.me/client.js', async: true },
+            ]
+        });
+        window.Reveal = reveal; // make our reveal object global, for the master/client scripts
+        reveal.initialize();
     }, []);
 
     return (<>
-        <p>Presentation...</p>
+        <p>{role} presentation...</p>
         <div className="reveal" style={{ width: '100%', flexGrow: 1, border: 'solid 1px black' }}>
             <div className="slides">
                 { children }
