@@ -8,9 +8,19 @@ Multiplexing allows the controller to update all the clients as it moves through
 
 ## Test this app
 
+If you've just cloned the repository, you probably need to install the node packages:
+
+```bash
+npm install
+```
+
+Now you can launch the development server:
+
 ```bash
 npm run dev
 ```
+
+It'll serve the application at: [localhost:3000](http://localhost:3000)
 
 ## Developer notes
 
@@ -48,15 +58,15 @@ npm install reveal.js
 This is an invocation for Next - telling it that the component needs client-side rendering:
 
 ```tsx
-'use client';
-``` 
+"use client";
+```
 
 `Reveal` is only initialized inside a `useEffect` - which is called when the page and divs are ready:
 
 ```tsx
 useEffect(() => {
-    const deck = new Reveal({ embedded: true, plugins: [ Markdown ]});
-    deck.initialize();
+  const deck = new Reveal({ embedded: true, plugins: [Markdown] });
+  deck.initialize();
 }, []);
 ```
 
@@ -86,23 +96,23 @@ Multiplexing allows a controller presentation to send its state to client presen
 
 There are 3 components:
 
-* Any number of client presentations
-* A controller* presentation, with the same slides
-* A socket.io based server that passes messages between the various presentations
+- Any number of client presentations
+- A controller\* presentation, with the same slides
+- A socket.io based server that passes messages between the various presentations
 
-_*Sometimes referred to as a master presentation._
+_\*Sometimes referred to as a master presentation._
 
 ### The server
 
 This demo uses the server at: https://reveal-multiplex.glitch.me/
 
 ```tsx
-const SOCKET_IO_SERVER = 'https://reveal-multiplex.glitch.me/';
+const SOCKET_IO_SERVER = "https://reveal-multiplex.glitch.me/";
 ```
 
-* To test locally, you could also run your own server.
-* A production system should host its own server.
-* See: [reveal/multiplex](https://github.com/reveal/multiplex)
+- To test locally, you could also run your own server.
+- A production system should host its own server.
+- See: [reveal/multiplex](https://github.com/reveal/multiplex)
 
 ### Client and controller
 
@@ -114,11 +124,11 @@ npm install reveal-multiplex
 
 The Presentation component in `presentation.tsx` accepts several parameters:
 
-* `secret` (a secret to permit control, or `null` if acting as the client)
-* `id` (the id of the presentation)
-* `role` (not currently used)
+- `secret` (a secret to permit control, or `null` if acting as the client)
+- `id` (the id of the presentation)
+- `role` (not currently used)
 
-* To collect a fresh secret and id from the server, visit: https://reveal-multiplex.glitch.me/token
+- To collect a fresh secret and id from the server, visit: https://reveal-multiplex.glitch.me/token
 
 The multiplex plugin is configured during initialization of Reveal:
 
