@@ -80,6 +80,24 @@ Here, you can see that `margin` and `padding` on `html` and `body` have been zer
 
 The `Presentation` element is provided with child elements that contain the content to display. This allows the rendering of different content for different pages.
 
+## Dynamic content
+
+There are a confusing selection of packages: 
+
+* [html-react-parser](https://www.npmjs.com/package/html-react-parser) (updated recently)
+* [html-to-react](https://www.npmjs.com/package/html-to-react) (updated recently)
+* ~~[react-html-parser](https://www.npmjs.com/package/react-html-parser)~~ (updated 6 years ago)
+
+Install `html-react-parser`
+
+```bash
+npm install html-react-parser
+```
+
+This is used in `PresentationComponent` to retrieve content and render it dynamically.
+
+**NB.** `html-react-parser` is simple to use, but not XSS-safe, and should be used with caution. `html-to-react` offers more control over the content that's rendered, and could be used safely.
+
 ## Multiplexing
 
 Multiplexing allows a controller presentation to send its state to client presentations on other devices (ie. to allow them to follow along).

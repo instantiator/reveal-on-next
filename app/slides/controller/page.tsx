@@ -1,6 +1,6 @@
 import dynamic from 'next/dynamic';
 
-const Presentation = dynamic(() => import('../../../components/presentation'), { ssr: false });
+const Presentation = dynamic(() => import('../../../components/Presentation'), { ssr: false });
 
 const SECRET: string = '1693769190153147526';
 const SOCKET_ID: string = '92a17eeda40da7aa';
