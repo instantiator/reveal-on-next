@@ -17,8 +17,8 @@ const options: HTMLReactParserOptions = {
 export default function PresentationContent({ src, onLoaded }: { src: string, onLoaded: () => any }) {
     const { data, error, isLoading } = useSWR(src, fetcher, { onSuccess: () => onLoaded() });
 
-    if (isLoading) return (<div>Loading...</div>);
-    if (error) return (<div><h2>Error</h2><p>{error}</p></div>);
+    if (isLoading) return (<div className="slides"><h2>Loading...</h2></div>);
+    if (error) return (<div className="slides"><h2>Error</h2><p>{error}</p></div>);
 
     return (<div className="slides">{parse(data ?? '', options)}</div>);
 };
