@@ -6,16 +6,14 @@ import Question from './Question';
 import useSWR from 'swr';
 import parse, { HTMLReactParserOptions, Element } from 'html-react-parser';
 
-
 const fetcher = (url: string) => fetch(url).then((res) => res.text());
 
 const options = {
     replace: (domNode: any) => {
-        console.log(domNode);
         if (domNode instanceof Element && domNode.attribs) {
-            console.log(domNode.tagName);
             switch (domNode.tagName) {
             case 'question':
+                console.log('Enriching question tag...');
                 let question = domNode.attribs['question'];
                 let explanation = domNode.attribs['explanation'];
                 let instruction = domNode.attribs['instruction'];

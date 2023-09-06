@@ -7,6 +7,10 @@ const SOCKET_ID: string = '92a17eeda40da7aa';
 
 export default function Controller() {
     return (
-        <Presentation role="controller" secret={SECRET} id={SOCKET_ID} src="/presentation-html.html" />
+        <Presentation 
+            role="controller" 
+            secret={SECRET} 
+            id={SOCKET_ID} 
+            src="/presentation-tsx.html" />
     );
 }
