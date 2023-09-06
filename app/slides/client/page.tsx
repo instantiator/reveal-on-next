@@ -7,8 +7,10 @@ const Presentation = dynamic(() => import('../../../components/Presentation'), {
 const SOCKET_ID: string = '92a17eeda40da7aa';
 
 export default function Client() {
-    return (
-        <Presentation role="client" id={SOCKET_ID} secret={null} src="/sample-presentation.html">
-        </Presentation>
+    return (<Presentation 
+        role="client" 
+        id={SOCKET_ID} 
+        secret={null} 
+        src="/presentation-html.html" />
     );
 }

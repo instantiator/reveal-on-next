@@ -29,11 +29,12 @@ export default function Presentation({ role, secret, id, src }: { role: string, 
             ]
         });
         window.Reveal = reveal; // make our reveal object global, for the master/client scripts
-        reveal.initialize();
     }, []);
 
     const onContentReady = () => {
-        window.Reveal.sync();
+        console.log('content ready');
+        window.Reveal.initialize();
+        // window.Reveal.sync();
     };
 
     return (<>
