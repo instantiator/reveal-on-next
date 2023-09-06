@@ -5,7 +5,7 @@ export default function Question({ question, explanation, instruction }: { quest
 
     return (<>
         <div>
-            <h1>{question}</h1>
+            <h2>{question}</h2>
             <p>{explanation}</p>
             <p>{instruction}</p>
         </div>

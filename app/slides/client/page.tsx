@@ -11,6 +11,6 @@ export default function Client() {
         role="client" 
         id={SOCKET_ID} 
         secret={null} 
-        src="/presentation-html.html" />
+        src="/presentation-tsx.html" />
     );
 }
