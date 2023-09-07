@@ -41,26 +41,23 @@ npm install reveal.js
 
 ### Create a presentation component
 
-**See `components/presentation.tsx`**
+**See `components/Presentation.tsx`**
 
 `reveal.js` will only run in a browser environment, as it needs access to client specific javascript objects, such as `navigator`. It also needs to be able to see the `div` elements with `reveal` and `slides` CSS classes, as soon as it is created. This code forces Next to only invoke it in a browser...
 
 This is an invocation for Next - telling it that the component needs client-side rendering:
 
 ```tsx
-'use client';
-``` 
-
-`Reveal` is only initialized inside a `useEffect` - which is called when the page and divs are ready:
-
-```tsx
-useEffect(() => {
-    const deck = new Reveal({ embedded: true, plugins: [ Markdown ]});
-    deck.initialize();
-}, []);
+"use client";
 ```
 
+`Reveal` is only created inside a `useEffect` - which is called when the page and divs are ready.
+
 The `embedded` option is set to true - and this helps to incorporate other layout and elements alongside the presentation. As the presentation no longer automatically fills the page, the `reveal` `div` will need to have its size specified in CSS...
+
+_NB. The configuration also includes multiplex information and dependencies. See below for more information._
+
+`Reveal` is only initialised once the content inside the presentation is ready. See below for details of how the content is retrieved and rendered.
 
 ### Modify `globals.css`
 
@@ -78,15 +75,19 @@ Here, you can see that `margin` and `padding` on `html` and `body` have been zer
 
 `dynamic` is used to import the `Presentation` element dynamically, with `ssr: false` to prevent server-side rendering.
 
-The `Presentation` element is provided with child elements that contain the content to display. This allows the rendering of different content for different pages.
+## Remote content
 
-## Dynamic content
+The `Presentation` element has a `src` parameter, and this is passed to an internal `PresentationContent` element which uses the [SWR](https://swr.vercel.app/) library to fetch the content. This content is then enriched (React elements are created where needed inside it), and then rendered inside the `Presentation`.
 
-There are a confusing selection of packages: 
+### Dynamically creating React elements
 
-* [html-react-parser](https://www.npmjs.com/package/html-react-parser) (updated recently)
-* [html-to-react](https://www.npmjs.com/package/html-to-react) (updated recently)
-* ~~[react-html-parser](https://www.npmjs.com/package/react-html-parser)~~ (updated 6 years ago)
+Some of the content is regular HTML, but some of the elements are React components. There are a number of packages that might help us convert the HTML and manage React components:
+
+| Library                                                                  | Last updated |
+| ------------------------------------------------------------------------ | ------------ |
+| [html-react-parser](https://www.npmjs.com/package/html-react-parser)     | recently     |
+| [html-to-react](https://www.npmjs.com/package/html-to-react)             | recently     |
+| ~~[react-html-parser](https://www.npmjs.com/package/react-html-parser)~~ | 6 years ago  |
 
 Install `html-react-parser`
 
@@ -94,9 +95,33 @@ Install `html-react-parser`
 npm install html-react-parser
 ```
 
-This is used in `PresentationComponent` to retrieve content and render it dynamically.
+**NB.** `html-react-parser` is simple to use, but not XSS-safe, and should be used with caution. `PresentationContent` manages replacement of individual React elements by type:
 
-**NB.** `html-react-parser` is simple to use, but not XSS-safe, and should be used with caution. `html-to-react` offers more control over the content that's rendered, and could be used safely.
+```tsx
+const options = {
+  replace: (domNode: any) => {
+    if (domNode instanceof Element && domNode.attribs) {
+      switch (domNode.tagName) {
+        case "question":
+          console.log("Enriching question tag...");
+          let question = domNode.attribs["question"];
+          let explanation = domNode.attribs["explanation"];
+          let instruction = domNode.attribs["instruction"];
+          if (question && explanation && instruction) {
+            return (
+              <Question
+                question={question}
+                explanation={explanation}
+                instruction={instruction}
+              />
+            );
+          }
+          break;
+      }
+    }
+  },
+};
+```
 
 ## Multiplexing
 
@@ -104,23 +129,23 @@ Multiplexing allows a controller presentation to send its state to client presen
 
 There are 3 components:
 
-* Any number of client presentations
-* A controller* presentation, with the same slides
-* A socket.io based server that passes messages between the various presentations
+- Any number of client presentations
+- A controller\* presentation, with the same slides
+- A socket.io based server that passes messages between the various presentations
 
-_*Sometimes referred to as a master presentation._
+_\*Sometimes referred to as a master presentation._
 
 ### The server
 
 This demo uses the server at: https://reveal-multiplex.glitch.me/
 
 ```tsx
-const SOCKET_IO_SERVER = 'https://reveal-multiplex.glitch.me/';
+const SOCKET_IO_SERVER = "https://reveal-multiplex.glitch.me/";
 ```
 
-* To test locally, you could also run your own server.
-* A production system should host its own server.
-* See: [reveal/multiplex](https://github.com/reveal/multiplex)
+- To test locally, you could also run your own server.
+- A production system should host its own server.
+- See: [reveal/multiplex](https://github.com/reveal/multiplex)
 
 ### Client and controller
 
@@ -132,11 +157,11 @@ npm install reveal-multiplex
 
 The Presentation component in `presentation.tsx` accepts several parameters:
 
-* `secret` (a secret to permit control, or `null` if acting as the client)
-* `id` (the id of the presentation)
-* `role` (not currently used)
+- `secret` (a secret to permit control, or `null` if acting as the client)
+- `id` (the id of the presentation)
+- `role` (not currently used)
 
-* To collect a fresh secret and id from the server, visit: https://reveal-multiplex.glitch.me/token
+- To collect a fresh secret and id from the server, visit: https://reveal-multiplex.glitch.me/token
 
 The multiplex plugin is configured during initialization of Reveal:
 
