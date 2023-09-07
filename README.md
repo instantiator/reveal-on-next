@@ -1,6 +1,12 @@
 # test-reveal-on-next
 
-This is a simple application that allows the incorporation of a [Reveal.js](https://revealjs.com/) presentation into a [NextJS](https://nextjs.org/) / [React](https://react.dev/) application, and subsequent multiplexing of the presentation across a controller and any number of clients.
+This is a simple application that allows the incorporation of a [Reveal.js](https://revealjs.com/) presentation into a [NextJS](https://nextjs.org/) / [React](https://react.dev/) application.
+
+- NextJS / React web app
+- Incoroporates Reveal slides as content
+- HTML content is loaded from a remote (or local) URL
+- React element inside the HTML content can be created as needed
+- Slide show can be multiplexed between controller and clients
 
 Multiplexing allows the controller to update all the clients as it moves through the presentation. Effectively, they follow along...
 
@@ -51,7 +57,7 @@ npm install reveal.js
 
 ### Create a presentation component
 
-**See `components/presentation.tsx`**
+**See `components/Presentation.tsx`**
 
 `reveal.js` will only run in a browser environment, as it needs access to client specific javascript objects, such as `navigator`. It also needs to be able to see the `div` elements with `reveal` and `slides` CSS classes, as soon as it is created. This code forces Next to only invoke it in a browser...
 
@@ -59,6 +65,7 @@ This is an invocation for Next - telling it that the component needs client-side
 
 ```tsx
 "use client";
+<<<<<<< HEAD
 ```
 
 `Reveal` is only initialized inside a `useEffect` - which is called when the page and divs are ready:
@@ -68,9 +75,17 @@ useEffect(() => {
   const deck = new Reveal({ embedded: true, plugins: [Markdown] });
   deck.initialize();
 }, []);
+=======
+>>>>>>> experimental-content-retrieval
 ```
 
+`Reveal` is only created inside a `useEffect` - which is called when the page and divs are ready.
+
 The `embedded` option is set to true - and this helps to incorporate other layout and elements alongside the presentation. As the presentation no longer automatically fills the page, the `reveal` `div` will need to have its size specified in CSS...
+
+_NB. The configuration also includes multiplex information and dependencies. See below for more information._
+
+`Reveal` is only initialised once the content inside the presentation is ready. See below for details of how the content is retrieved and rendered.
 
 ### Modify `globals.css`
 
@@ -88,7 +103,53 @@ Here, you can see that `margin` and `padding` on `html` and `body` have been zer
 
 `dynamic` is used to import the `Presentation` element dynamically, with `ssr: false` to prevent server-side rendering.
 
-The `Presentation` element is provided with child elements that contain the content to display. This allows the rendering of different content for different pages.
+## Remote content
+
+The `Presentation` element has a `src` parameter, and this is passed to an internal `PresentationContent` element which uses the [SWR](https://swr.vercel.app/) library to fetch the content. This content is then enriched (React elements are created where needed inside it), and then rendered inside the `Presentation`.
+
+### Dynamically creating React elements
+
+Some of the content is regular HTML, but some of the elements are React components. There are a number of packages that might help us convert the HTML and manage React components:
+
+| Library                                                                  | Last updated |
+| ------------------------------------------------------------------------ | ------------ |
+| [html-react-parser](https://www.npmjs.com/package/html-react-parser)     | recently     |
+| [html-to-react](https://www.npmjs.com/package/html-to-react)             | recently     |
+| ~~[react-html-parser](https://www.npmjs.com/package/react-html-parser)~~ | 6 years ago  |
+
+Install `html-react-parser`
+
+```bash
+npm install html-react-parser
+```
+
+**NB.** `html-react-parser` is simple to use, but not XSS-safe, and should be used with caution. `PresentationContent` manages replacement of individual React elements by type:
+
+```tsx
+const options = {
+  replace: (domNode: any) => {
+    if (domNode instanceof Element && domNode.attribs) {
+      switch (domNode.tagName) {
+        case "question":
+          console.log("Enriching question tag...");
+          let question = domNode.attribs["question"];
+          let explanation = domNode.attribs["explanation"];
+          let instruction = domNode.attribs["instruction"];
+          if (question && explanation && instruction) {
+            return (
+              <Question
+                question={question}
+                explanation={explanation}
+                instruction={instruction}
+              />
+            );
+          }
+          break;
+      }
+    }
+  },
+};
+```
 
 ## Multiplexing
 
