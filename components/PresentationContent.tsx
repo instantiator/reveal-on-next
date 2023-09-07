@@ -34,6 +34,3 @@ export default function PresentationContent({ src, onLoaded }: { src: string, on
 
     return (<div className="slides">{data && parse(data, options)}</div>);
 };
-
-// TODO: html-react-parser doesn't seem to do the job - it's rendering Question as question - ie. keeping it as html
-// TODO: instead try: html-to-react, https://www.npmjs.com/package/html-to-react
