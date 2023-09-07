@@ -95,6 +95,10 @@ Here, you can see that `margin` and `padding` on `html` and `body` have been zer
 
 The `Presentation` element has a `src` parameter, and this is passed to an internal `PresentationContent` element which uses the [SWR](https://swr.vercel.app/) library to fetch the content. This content is then enriched (React elements are created where needed inside it), and then rendered inside the `Presentation`.
 
+```bash
+npm install swr
+```
+
 ### Dynamically creating React elements
 
 Some of the content is regular HTML, but some of the elements are React components. There are a number of packages that might help us convert the HTML and manage React components:
@@ -137,6 +141,12 @@ const options = {
     }
   },
 };
+```
+
+Here, `Question` also incorporates a `Rating` element, from: [react-rating](https://www.npmjs.com/package/react-rating)
+
+```bash
+npm install react-rating
 ```
 
 ## Multiplexing
