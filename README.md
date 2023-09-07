@@ -65,18 +65,6 @@ This is an invocation for Next - telling it that the component needs client-side
 
 ```tsx
 "use client";
-<<<<<<< HEAD
-```
-
-`Reveal` is only initialized inside a `useEffect` - which is called when the page and divs are ready:
-
-```tsx
-useEffect(() => {
-  const deck = new Reveal({ embedded: true, plugins: [Markdown] });
-  deck.initialize();
-}, []);
-=======
->>>>>>> experimental-content-retrieval
 ```
 
 `Reveal` is only created inside a `useEffect` - which is called when the page and divs are ready.
