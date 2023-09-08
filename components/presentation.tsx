@@ -3,8 +3,7 @@
 import React from 'react';
 import { ReactNode, useEffect } from 'react';
 
-import Reveal from 'reveal.js';
-import Markdown from 'reveal.js/plugin/markdown/markdown.esm.js';
+import RevealJS from 'reveal.js';
 
 import 'reveal.js/dist/reveal.css';
 import 'reveal.js/dist/theme/black.css';
@@ -19,9 +18,9 @@ export default function Presentation({ role, secret, id, src }: { role: string, 
     useEffect(() => {
         // must happen when the page is definitely being rendered in a browser
         if (!window.Reveal) {
-            reveal = new Reveal({
+            reveal = new RevealJS({
                 embedded: true, 
-                plugins: [ Markdown ],
+                plugins: [ ],
                 multiplex: {
                     secret: secret,
                     id: id,
@@ -39,6 +38,7 @@ export default function Presentation({ role, secret, id, src }: { role: string, 
             // 1. global variables aren't good practise, but necessary here
             // 2. window.Reveal already has a different type, so typescript doesn't like it
             //    If we rewrite the master.js and client.js scripts, we could elect to use a different global
+            // @ts-ignore
             window.Reveal = reveal;
         }
     }, []);

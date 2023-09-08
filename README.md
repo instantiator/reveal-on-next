@@ -209,3 +209,25 @@ Because these dependencies rely on being able to find `Reveal` as a global varia
 ```tsx
 window.Reveal = reveal;
 ```
+
+## Static builds
+
+In `tsconfig.json` add the following to `$.compilerOptions.paths`:
+
+```json
+"react": ["./node_modules/@types/react"]
+```
+
+Modify `next.config.js` to set `output` to `export`:
+
+```js
+const nextConfig = { output: "export" };
+```
+
+Build the project:
+
+```bash
+npx next build
+```
+
+Static output is available in the `out` directory by default.
