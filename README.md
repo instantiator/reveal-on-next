@@ -7,6 +7,7 @@ This is a simple application that allows the incorporation of a [Reveal.js](http
 - HTML content is loaded from a remote (or local) URL
 - React element inside the HTML content can be created as needed
 - Slide show can be multiplexed between controller and clients
+- Supports build and export that can be hosted statically (eg. with [GitHub Pages](https://pages.github.com/))
 
 Multiplexing allows the controller to update all the clients as it moves through the presentation. Effectively, they follow along...
 
