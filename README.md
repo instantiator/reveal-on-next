@@ -212,11 +212,24 @@ window.Reveal = reveal;
 
 ## Static builds
 
-In `tsconfig.json` add the following to `$.compilerOptions.paths`:
+### Fix compiler issues
+
+Not all imports agree on the version of React to use, and this can lead to difficulties with imported elements (such as the `Rating` element used in `Question.tsx`). In `tsconfig.json` add the following to `$.compilerOptions.paths` to enforce use of the same version:
 
 ```json
 "react": ["./node_modules/@types/react"]
 ```
+
+In `Presentation.tsx`, `window.Reveal` is explicitly set to ensure that it is available to the multiplexing scripts imported as dependencies of `Reveal`. TypeScript is strict during a production build, and rejects this as it thinks `Reveal` is already the name of the module.
+
+To instruct the compiler to overlook TypeScript errors, precede the line with `// @ts-ignore`, as here:
+
+```tsx
+// @ts-ignore
+window.Reveal = reveal;
+```
+
+### Build and export the project
 
 Modify `next.config.js` to set `output` to `export`:
 
@@ -230,4 +243,10 @@ Build the project:
 npx next build
 ```
 
-Static output is available in the `out` directory by default.
+Static output is put into the `out` directory by default.
+
+## Hosting on GitHub pages
+
+[GitHub Pages](https://pages.github.com/) can serve the static content either from the root directory of a repository, or from the `docs/` directory. You can place the output from `out` into another repository, and serve it from there by enabling GitHub Pages.
+
+**However,** directories that are prefixed with `_` (underscore) are ignored by default. To work around this, add an empty file called `.nojekyll` at the root of the repository (see: [this blog post](https://github.blog/2009-12-29-bypassing-jekyll-on-github-pages/) about it).
