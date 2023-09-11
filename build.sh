@@ -1,3 +1,3 @@
 #!/bin/bash
 
-npx next build && npx next export
+npx next build
